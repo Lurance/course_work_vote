@@ -1,0 +1,41 @@
+{
+  "name": "course_work",
+  "version": "0.5.0",
+  "description": "课程作业，简单的投票",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel src/frontend/index.html",
+    "serve": "ts-node src/app.ts",
+    "build": "parcel build src/frontend/index.html"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/koa": "^2.0.46",
+    "@types/koa-static": "^4.0.0",
+    "@types/koa2-cors": "^2.0.1",
+    "@types/mongoose": "^5.0.15",
+    "@types/ms": "^0.7.30",
+    "parcel-bundler": "^1.8.1",
+    "ts-node": "^6.1.0",
+    "typescript": "^2.9.1"
+  },
+  "dependencies": {
+    "@types/vue": "^2.0.0",
+    "axios": "^0.18.0",
+    "koa": "^2.5.1",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "koa-static": "^4.0.3",
+    "koa2-cors": "^2.0.5",
+    "mongoose": "^5.1.3",
+    "ms": "^2.1.1",
+    "reflect-metadata": "^0.1.12",
+    "routing-controllers": "^0.7.7",
+    "vue": "^2.5.16"
+  },
+  "alias": {
+    "vue": "./node_modules/vue/dist/vue.common.js"
+  }
+}

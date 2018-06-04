@@ -10,6 +10,10 @@ async function getVotesFromPage(page: number): Promise<IVote[]> {
     return res.data
 }
 
+async function vote(item: IVote) {
+
+}
+
 
 const Component = Vue.extend({
     data() {
