@@ -6,10 +6,25 @@ import * as Application from "koa"
 
 import * as cors from 'koa2-cors'
 
-import {Get, JsonController, Param, useKoaServer} from "routing-controllers"
+import {
+    BadRequestError,
+    BodyParam,
+    Ctx,
+    Get,
+    JsonController,
+    Param,
+    Post, Session,
+    UnauthorizedError,
+    useKoaServer
+} from "routing-controllers"
 
 import * as serve from "koa-static"
+
 import ms = require("ms")
+
+import * as md5 from "js-md5"
+import * as session from "koa-session"
+import {Context} from "koa"
 
 const PORT = 2345
 
@@ -88,6 +103,20 @@ mongoose.connection
             createBy: '派拉蒙影业'
         })
 
+        Vote.create({
+            name: '无问西东',
+            img: `http://127.0.0.1:${PORT}/img/b14115bd883b1065045b8c82db3bb5f5.png`,
+            categories: ['剧情', '爱情'],
+            createBy: '企鹅影视'
+        })
+
+        Vote.create({
+            name: '复仇者联盟',
+            img: `http://127.0.0.1:${PORT}/img/83db569a61f8f225bcceb6985d1ead7d.jpg`,
+            categories: ['动作'],
+            createBy: '漫威'
+        })
+
 
         console.log('End Create Init Data')
     });
@@ -99,6 +128,41 @@ export interface IVote extends mongoose.Document {
     createBy: string,
     vote: number
 }
+
+export interface IUser extends mongoose.Document {
+    username: string,
+    password: string,
+    votes: string[],
+    createdAt: Date
+}
+
+const userSchema = new mongoose.Schema({
+    username: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    votes: [String],
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        required: true
+    }
+})
+
+userSchema.pre<IUser>('save', function (next) {
+    if (this.password) {
+        this.password = md5(this.password)
+    }
+
+    next()
+})
+
+const User = mongoose.model<IUser>('User', userSchema)
+
 
 const voteSchema = new mongoose.Schema({
     name: {
@@ -125,6 +189,49 @@ const voteSchema = new mongoose.Schema({
 
 const Vote = mongoose.model<IVote>('Voto', voteSchema)
 
+@JsonController()
+class UserController {
+    @Post('/login')
+    async loginUser(@BodyParam('username', {required: true}) username: string,
+                    @BodyParam('password', {required: true}) password: string,
+                    @Ctx() ctx: Context,
+                    @Session('user', {required: false}) user: IUser) {
+        if (user) {
+            throw new BadRequestError()
+        }
+        const u = await User.findOne({username: username, password: md5(password)})
+        if (u) {
+            ctx.session.user = {
+                _id: u._id,
+                username: u.username
+            }
+            return {
+                status: 1
+            }
+        } else {
+            throw new UnauthorizedError()
+        }
+    }
+
+
+    @Post('/reg')
+    async reguser(@BodyParam('username', {required: true}) username: string,
+                  @BodyParam('password', {required: true}) password: string) {
+        if (await User.count({username: username}) > 0) {
+            throw new BadRequestError()
+        } else {
+            User.create({
+                username: username,
+                password: password
+            })
+
+            return {
+                status: 1
+            }
+        }
+    }
+}
+
 
 @JsonController()
 class VoteController {
@@ -134,7 +241,7 @@ class VoteController {
         if (allNum === 0) {
             return [1]
         }
-       return [...Array(Math.ceil(allNum / 6)).keys()].map(v => v + 1)
+        return [...Array(Math.ceil(allNum / 6)).keys()].map(v => v + 1)
     }
 
     @Get('/vote/:p')
@@ -149,6 +256,18 @@ class VoteController {
 export const createServer = (): Application => {
     const app = new Application()
 
+    app.keys= ['cweopj324jcnsop30f']
+
+    app.use(session({
+        key: 'koa:sess',
+        maxAge: 86400000,
+        overwrite: true,
+        httpOnly: true,
+        signed: true,
+        rolling: false,
+        renew: false,
+    }, app))
+
     app.use(cors())
 
     app.use(serve(__dirname + '/static', {
@@ -158,7 +277,8 @@ export const createServer = (): Application => {
     useKoaServer(app, {
         routePrefix: '/api',
         controllers: [
-            VoteController
+            VoteController,
+            UserController
         ],
         classTransformer: false,
         development: true
@@ -170,7 +290,7 @@ export const createServer = (): Application => {
 
 try {
     createServer().listen(PORT, () => {
-        console.log(`Server is running on POST: ${PORT}`)
+        console.log(`Server is running on PORT: ${PORT}`)
     })
 } catch (e) {
     console.log(e)

@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Vote</title>
-    <meta>
+    <title>Vote | Home</title>
     <link href="index.css" rel="stylesheet">
 </head>
 <body>
@@ -18,7 +17,8 @@
             <span :class="{'header-page-activate': nowPage == p}" v-for="p in pages" @click="choicePage(p)">{{p}}</span>
         </section>
         <section class="header-loginbtn">
-            <button>Login</button>
+            <button onclick="location.href='./login.html'">Login</button>
+            <a href="./login.html" style="display: none">Login</a>
         </section>
     </header>
 

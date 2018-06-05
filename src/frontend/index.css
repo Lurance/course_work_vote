@@ -1,6 +1,11 @@
 *, html, body {
     margin: 0;
     padding: 0;
+    color: #4b4b4b;
+}
+
+body {
+    font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, sans-serif;
 }
 
 body {
@@ -19,6 +24,7 @@ header {
     text-align: center;
     z-index: 9999;
     top: 0;
+    justify-content: space-between;
 }
 
 header .header-logo {

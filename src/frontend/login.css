@@ -1,0 +1,49 @@
+main {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto auto;
+    background-color: #ffffff;
+    height: 50vh;
+    width: 25vw;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.mdui-textfield {
+    width: 100%;
+}
+
+.mdui-textfield-floating-label.mdui-textfield-focus .mdui-textfield-label {
+    color: #ffe903;
+}
+
+.mdui-textfield-focus .mdui-textfield-input, .mdui-textfield-focus .mdui-textfield-input:hover {
+    color: #ffe903;
+    border-bottom-color: #ffe903;
+    box-shadow: 0 1px 0 0 #ffe903;
+}
+
+main p {
+    width: 100%;
+    padding-top: 16px;
+}
+
+main p button:first-child {
+    color: #4b4b4b;
+    background-color: #ffe903;
+}
+
+main p button:last-child {
+    float: right;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+}

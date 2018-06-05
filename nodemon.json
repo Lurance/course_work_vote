@@ -1,0 +1,8 @@
+{
+  "watch": [
+    "src/app.ts"
+  ],
+  "execMap": {
+    "ts": "ts-node"
+  }
+}
