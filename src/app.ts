@@ -11,7 +11,7 @@ import {
     BodyParam,
     Ctx,
     Get,
-    JsonController,
+    JsonController, OnUndefined,
     Param,
     Post, Session,
     UnauthorizedError,
@@ -211,6 +211,14 @@ class UserController {
         }
     }
 
+    @Get('/logout')
+    @OnUndefined(204)
+    logoutUser(@Session('user', {required: true}) user: IUser,
+               @Ctx() ctx: Context
+               ) {
+        ctx.session.user = null
+    }
+
 
     @Post('/reg')
     async reguser(@BodyParam('username', {required: true}) username: string,
@@ -234,8 +242,7 @@ class UserController {
 @JsonController()
 class VoteController {
     @Get('/page')
-    async todoPage(@Session('user') user: IUser) {
-        console.log(user)
+    async todoPage() {
         const allNum = await Vote.count({})
         if (allNum === 0) {
             return [1]
@@ -249,6 +256,22 @@ class VoteController {
             .sort('_id')
             .limit(6)
             .skip((p - 1) * 6)
+    }
+
+    @Post('/vote')
+    async doVote(@BodyParam('_id', {required: true}) _id: string,
+           @Session('user') user: IUser) {
+        console.log(_id)
+        console.log(user)
+
+        const u = await User.findOne({_id: user._id})
+        if (u.votes.findIndex(v => v === _id) >= 0) {
+            throw new BadRequestError()
+        } else {
+            await u.update({$push: {votes: _id}})
+            return await Vote.findOneAndUpdate({_id: _id}, {$inc: {vote: 1}}, {new: true})
+        }
+
     }
 }
 
@@ -273,7 +296,9 @@ export const createServer = (): Application => {
         maxAge: ms('20d')
     }))
 
-    app.use(serve(__dirname + '/../dist'))
+    app.use(serve(__dirname + '/../dist', {
+        maxAge: ms('5d')
+    }))
 
     useKoaServer(app, {
         routePrefix: '/api',

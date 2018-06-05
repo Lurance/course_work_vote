@@ -74,6 +74,17 @@ header .header-loginbtn button {
     cursor: pointer;
 }
 
+header .header-username span {
+    color: #fff;
+    line-height: 30px;
+    padding-right: 5vw;
+}
+
+header .header-username  span  span {
+    color: #ffe903 ;
+    cursor: pointer;
+}
+
 main {
     margin-top: 80px;
     padding: 0 10%;

@@ -6,7 +6,8 @@
   "scripts": {
     "watch": "parcel watch src/frontend/index.html",
     "serve": "nodemon src/app.ts",
-    "build": "parcel build src/frontend/index.html"
+    "build": "parcel build src/frontend/index.html",
+    "start": "pm2 start ts-node -- src/app.ts"
   },
   "author": "",
   "license": "ISC",
@@ -22,6 +23,7 @@
     "liteserver": "^0.3.0",
     "nodemon": "^1.17.5",
     "parcel-bundler": "^1.8.1",
+    "pm2": "^2.10.4",
     "ts-node": "^6.1.0",
     "typescript": "^2.9.1"
   },

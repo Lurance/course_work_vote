@@ -16,9 +16,12 @@
         <section class="header-page">
             <span :class="{'header-page-activate': nowPage == p}" v-for="p in pages" @click="choicePage(p)">{{p}}</span>
         </section>
-        <section class="header-loginbtn">
+        <section class="header-loginbtn" v-if="!userInfo">
             <button onclick="location.href='./login.html'">Login</button>
             <a href="./login.html" style="display: none">Login</a>
+        </section>
+        <section v-else class="header-username">
+            <span>欢迎你，{{userInfo.username}}，<span @click="logout">登出</span></span>
         </section>
     </header>
 
