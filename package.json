@@ -4,7 +4,7 @@
   "description": "课程作业，简单的投票",
   "main": "index.js",
   "scripts": {
-    "dev": "parcel src/frontend/index.html",
+    "watch": "parcel watch src/frontend/index.html",
     "serve": "nodemon src/app.ts",
     "build": "parcel build src/frontend/index.html"
   },

@@ -194,11 +194,7 @@ class UserController {
     @Post('/login')
     async loginUser(@BodyParam('username', {required: true}) username: string,
                     @BodyParam('password', {required: true}) password: string,
-                    @Ctx() ctx: Context,
-                    @Session('user', {required: false}) user: IUser) {
-        if (user) {
-            throw new BadRequestError()
-        }
+                    @Ctx() ctx: Context) {
         const u = await User.findOne({username: username, password: md5(password)})
         if (u) {
             ctx.session.user = {
@@ -206,7 +202,9 @@ class UserController {
                 username: u.username
             }
             return {
-                status: 1
+                status: 1,
+                username: u.username,
+                expiresOn: Date.now() + 86400000
             }
         } else {
             throw new UnauthorizedError()
@@ -236,7 +234,8 @@ class UserController {
 @JsonController()
 class VoteController {
     @Get('/page')
-    async todoPage() {
+    async todoPage(@Session('user') user: IUser) {
+        console.log(user)
         const allNum = await Vote.count({})
         if (allNum === 0) {
             return [1]
@@ -273,6 +272,8 @@ export const createServer = (): Application => {
     app.use(serve(__dirname + '/static', {
         maxAge: ms('20d')
     }))
+
+    app.use(serve(__dirname + '/../dist'))
 
     useKoaServer(app, {
         routePrefix: '/api',

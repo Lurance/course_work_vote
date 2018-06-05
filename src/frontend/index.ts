@@ -3,6 +3,7 @@ import Axios from "axios"
 import Vue from 'vue'
 
 import {IVote} from "../app"
+import {checkAuthInfo} from "./base"
 
 class UserService {
 
@@ -28,7 +29,8 @@ const Page = Vue.extend({
         return {
             pages: null,
             nowPage: 1,
-            nowVotes: []
+            nowVotes: [],
+            userInfo: null
         }
     },
     created: function () {
@@ -37,6 +39,10 @@ const Page = Vue.extend({
 
         voteService.getVotesFromPage(this.nowPage)
             .then(data => this.nowVotes = data)
+        this.userInfo = checkAuthInfo() || null
+
+        console.log(this.userInfo)
+
 
     },
 

@@ -1,13 +1,21 @@
 import Vue from 'vue'
 import Axios from "axios"
+import {checkAuthInfo} from "./base"
 
 const Page = Vue.extend({
     data() {
         return {
             isLogin: true,
             username: '',
-            password: ''
+            password: '',
+            userInfo: null
         }
+    },
+    created: function() {
+        this.userInfo = checkAuthInfo() || null
+
+        console.log(this.userInfo)
+
     },
     methods: {
         submit() {
@@ -19,6 +27,7 @@ const Page = Vue.extend({
                     .then(res => {
                         if (res.status === 200) {
                             alert('登录成功')
+                            localStorage.setItem('authInfo', JSON.stringify(res.data))
                             location.href = 'index.html'
                         } else {
                             alert('登录失败')
